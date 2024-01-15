@@ -1,2 +1,3 @@
 # WeSmooth
 WeSmooth! A smooth workflow engine for your needs...
+![296449420-fd58d0f2-e157-48ff-bacd-dff6086c259b](https://github.com/bobi591/WeSmooth/assets/31781780/17ba9515-92f1-4869-aa4e-c99a0796d2d6)
