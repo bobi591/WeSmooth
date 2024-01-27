@@ -6,6 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
+/**
+ * First PR Test
+ *
+ * @author Sasho
+ */
 @Configuration
 @PropertySource("classpath:application.properties")
 public class ApplicationProperties {
