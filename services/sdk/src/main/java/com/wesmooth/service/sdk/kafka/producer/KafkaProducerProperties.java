@@ -3,28 +3,27 @@ package com.wesmooth.service.sdk.kafka.producer;
 
 import com.wesmooth.service.sdk.kafka.common.IKafkaFeatureProperties;
 import java.util.Properties;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
 
 public class KafkaProducerProperties implements IKafkaFeatureProperties {
 
   private final Properties properties = new Properties();
 
   public void setBootstrapServersConfig(String bootstrapServers) {
-    properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+    properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
   }
 
-  public void setKeyDeserializerClass(Class deserializerClass) {
-    properties.setProperty(
-        ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, deserializerClass.getName());
+  public void setKeySerializerClass(Class deserializerClass) {
+    properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, deserializerClass.getName());
   }
 
-  public void setValueDeserializerClass(Class deserializerClass) {
+  public void setValueSerializerClass(Class deserializerClass) {
     properties.setProperty(
-        ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializerClass.getName());
+        ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, deserializerClass.getName());
   }
 
   @Override
   public Properties build() {
-    return new Properties(this.properties);
+    return this.properties;
   }
 }

@@ -33,6 +33,6 @@ public class KafkaConsumerProperties implements IKafkaFeatureProperties {
 
   @Override
   public Properties build() {
-    return new Properties(this.properties);
+    return this.properties;
   }
 }

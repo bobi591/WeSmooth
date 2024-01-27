@@ -11,6 +11,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,8 +35,8 @@ public class KafkaFeaturesFactory {
     kafkaProducerProperties = new KafkaProducerProperties();
     kafkaProducerProperties.setBootstrapServersConfig(
         applicationProperties.getProperty("wesmooth.kafka.server"));
-    kafkaProducerProperties.setKeyDeserializerClass(StringDeserializer.class);
-    kafkaProducerProperties.setValueDeserializerClass(StringDeserializer.class);
+    kafkaProducerProperties.setKeySerializerClass(StringSerializer.class);
+    kafkaProducerProperties.setValueSerializerClass(StringSerializer.class);
   }
 
   KafkaFeatureFactory<KafkaConsumer, KafkaConsumerProperties> createConsumerFactory() {

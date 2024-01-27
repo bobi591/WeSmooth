@@ -1,26 +1,42 @@
 /* WeSmooth! 2024 */
 package com.wesmooth.service.choreography.controllers;
 
+import static com.mongodb.client.model.Filters.eq;
+
 import com.mongodb.client.MongoCursor;
 import com.wesmooth.service.sdk.kafka.KafkaBean;
+import com.wesmooth.service.sdk.kafka.events.BlueprintExecutionEvent;
+import com.wesmooth.service.sdk.kafka.events.EventStatus;
+import com.wesmooth.service.sdk.kafka.record.KafkaRecordFactory;
 import com.wesmooth.service.sdk.mongodb.MongoConnectionBean;
 import com.wesmooth.service.sdk.mongodb.dto.Blueprint;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/blueprints")
 public class BlueprintsController {
-  @Autowired MongoConnectionBean mongoConnectionBean;
-  @Autowired KafkaBean kafkaBean;
+  private final MongoConnectionBean mongoConnection;
+  private final KafkaProducer kafkaProducer;
+  private final KafkaRecordFactory kafkaRecordFactory;
+
+  @Autowired
+  public BlueprintsController(MongoConnectionBean mongoConnection, KafkaBean kafkaBean) {
+    this.mongoConnection = mongoConnection;
+    this.kafkaProducer = kafkaBean.createProducer();
+    this.kafkaRecordFactory = kafkaBean.createKafkaRecordFactory();
+  }
 
   @GetMapping
   public List<Blueprint> getAll() {
     List<Blueprint> results = new LinkedList<>();
     try (MongoCursor<Blueprint> cursor =
-        mongoConnectionBean.getCollection(Blueprint.class).find().iterator()) {
+        mongoConnection.getCollection(Blueprint.class).find().iterator()) {
       while (cursor.hasNext()) {
         results.add(cursor.next());
       }
@@ -30,10 +46,19 @@ public class BlueprintsController {
 
   @PostMapping
   public void insert(@RequestBody List<Blueprint> blueprints) {
-    mongoConnectionBean.getCollection(Blueprint.class).insertMany(blueprints);
+    mongoConnection.getCollection(Blueprint.class).insertMany(blueprints);
   }
 
   @PostMapping
   @RequestMapping("/execute")
-  public void execute(@RequestBody String bluePrintName) {}
+  public String execute(@RequestBody String blueprintName) {
+    String executionId = UUID.randomUUID().toString();
+    Bson blueprintNameFilter = eq("name", blueprintName);
+    Blueprint blueprint =
+        mongoConnection.getCollection(Blueprint.class).find(blueprintNameFilter).first();
+    BlueprintExecutionEvent blueprintExecutionEvent =
+        new BlueprintExecutionEvent(EventStatus.START, executionId, blueprint);
+    kafkaProducer.send(kafkaRecordFactory.createBlueprintExecutionRecord(blueprintExecutionEvent));
+    return "Kafka event for blueprint execution created with executionId: " + executionId;
+  }
 }
