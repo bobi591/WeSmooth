@@ -1,3 +1,4 @@
 rootProject.name = 'wesmooth-services'
 include 'choreography'
 include 'sdk'
+include 'blueprint'

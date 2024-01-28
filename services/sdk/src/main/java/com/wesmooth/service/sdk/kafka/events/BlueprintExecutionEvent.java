@@ -3,6 +3,7 @@ package com.wesmooth.service.sdk.kafka.events;
 
 import com.wesmooth.service.sdk.mongodb.dto.Blueprint;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 @Setter
@@ -13,7 +14,10 @@ public class BlueprintExecutionEvent {
   private Blueprint blueprint;
 
   public BlueprintExecutionEvent(
-      final EventStatus eventStatus, final String executionId, final Blueprint blueprint) {
+      @NonNull final EventStatus eventStatus,
+      @NonNull final String executionId,
+      @NonNull final Blueprint blueprint) {
+    this.eventStatus = eventStatus;
     this.executionId = executionId;
     this.blueprint = blueprint;
   }

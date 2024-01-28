@@ -53,7 +53,7 @@ public class BlueprintsController {
   @RequestMapping("/execute")
   public String execute(@RequestBody String blueprintName) {
     String executionId = UUID.randomUUID().toString();
-    Bson blueprintNameFilter = eq("name", blueprintName);
+    Bson blueprintNameFilter = eq("blueprint_name", blueprintName);
     Blueprint blueprint =
         mongoConnection.getCollection(Blueprint.class).find(blueprintNameFilter).first();
     BlueprintExecutionEvent blueprintExecutionEvent =
