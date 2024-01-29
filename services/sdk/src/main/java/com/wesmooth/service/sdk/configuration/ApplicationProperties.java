@@ -9,7 +9,13 @@ import org.springframework.core.env.Environment;
 @Configuration
 @PropertySource("classpath:application.properties")
 public class ApplicationProperties {
-  @Autowired private Environment environment;
+
+  private final Environment environment;
+
+  @Autowired
+  public ApplicationProperties(Environment environment) {
+    this.environment = environment;
+  }
 
   public String getProperty(String propertyName) {
     return this.environment.getProperty(propertyName);

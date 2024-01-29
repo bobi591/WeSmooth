@@ -10,8 +10,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaRecordFactory {
-  @Autowired private Gson gson;
-  @Autowired ApplicationProperties applicationProperties;
+  @Autowired
+  public KafkaRecordFactory(ApplicationProperties applicationProperties, Gson gson) {
+    this.applicationProperties = applicationProperties;
+    this.gson = gson;
+  }
+
+  private final Gson gson;
+  private final ApplicationProperties applicationProperties;
 
   public ProducerRecord<String, String> createBlueprintExecutionRecord(
       BlueprintExecutionEvent event) {
