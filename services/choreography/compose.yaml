@@ -25,8 +25,6 @@ services:
     container_name: wesmooth-mongodb
     environment:
       - 'MONGO_INITDB_DATABASE=developmentdb'
-      - 'MONGO_INITDB_ROOT_PASSWORD=wesmoothiscool123'
-      - 'MONGO_INITDB_ROOT_USERNAME=thesmoothadmin'
     ports:
       - '27017:27017'
 networks:
