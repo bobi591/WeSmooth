@@ -1,7 +1,6 @@
 /* WeSmooth! 2024 */
 package com.wesmooth.service.sdk.kafka;
 
-import com.wesmooth.service.sdk.configuration.ApplicationProperties;
 import com.wesmooth.service.sdk.kafka.common.KafkaFeatureFactory;
 import com.wesmooth.service.sdk.kafka.consumer.KafkaConsumerProperties;
 import com.wesmooth.service.sdk.kafka.producer.KafkaProducerProperties;
@@ -13,27 +12,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaBean {
-  private final ApplicationProperties applicationProperties;
-  private final KafkaFeatureFactory<KafkaConsumer, KafkaConsumerProperties> kafkaConsumerFactory;
-  private final KafkaFeatureFactory<KafkaProducer, KafkaProducerProperties> kafkaProducerFactory;
+  private final KafkaFeatureFactory<KafkaConsumer<String, String>, KafkaConsumerProperties>
+      kafkaConsumerFactory;
+  private final KafkaFeatureFactory<KafkaProducer<String, String>, KafkaProducerProperties>
+      kafkaProducerFactory;
   private final KafkaRecordFactory kafkaRecordFactory;
 
   @Autowired
   public KafkaBean(
-      ApplicationProperties applicationProperties,
-      KafkaFeaturesFactory kafkaFeaturesFactory,
-      KafkaRecordFactory kafkaRecordFactory) {
-    this.applicationProperties = applicationProperties;
+      KafkaFeaturesFactory kafkaFeaturesFactory, KafkaRecordFactory kafkaRecordFactory) {
     this.kafkaConsumerFactory = kafkaFeaturesFactory.createConsumerFactory();
     this.kafkaProducerFactory = kafkaFeaturesFactory.createProducerFactory();
     this.kafkaRecordFactory = kafkaRecordFactory;
   }
 
-  public KafkaConsumer createConsumer() {
+  public KafkaConsumer<String, String> createConsumer() {
     return this.kafkaConsumerFactory.create();
   }
 
-  public KafkaProducer createProducer() {
+  public KafkaProducer<String, String> createProducer() {
     return this.kafkaProducerFactory.create();
   }
 

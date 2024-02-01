@@ -17,13 +17,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaFeaturesFactory {
-  private final KafkaConsumerProperties kafkaConsumerProperties;
-  private final KafkaProducerProperties kafkaProducerProperties;
+  private final ApplicationProperties applicationProperties;
 
   @Autowired
   public KafkaFeaturesFactory(final ApplicationProperties applicationProperties) {
+    this.applicationProperties = applicationProperties;
+  }
+
+  KafkaFeatureFactory<KafkaConsumer<String, String>, KafkaConsumerProperties>
+      createConsumerFactory() {
     // build consumer properties
-    kafkaConsumerProperties = new KafkaConsumerProperties();
+    final KafkaConsumerProperties kafkaConsumerProperties = new KafkaConsumerProperties();
     kafkaConsumerProperties.setAutoResetConfig(OffsetResetStrategy.EARLIEST);
     kafkaConsumerProperties.setBootstrapServersConfig(
         applicationProperties.getProperty("wesmooth.kafka.server"));
@@ -31,19 +35,18 @@ public class KafkaFeaturesFactory {
         applicationProperties.getProperty("wesmooth.kafka.groupid"));
     kafkaConsumerProperties.setKeyDeserializerClass(StringDeserializer.class);
     kafkaConsumerProperties.setValueDeserializerClass(StringDeserializer.class);
+    return new KafkaConsumerFactory(kafkaConsumerProperties);
+  }
+
+  KafkaFeatureFactory<KafkaProducer<String, String>, KafkaProducerProperties>
+      createProducerFactory() {
     // build producer properties
+    final KafkaProducerProperties kafkaProducerProperties;
     kafkaProducerProperties = new KafkaProducerProperties();
     kafkaProducerProperties.setBootstrapServersConfig(
         applicationProperties.getProperty("wesmooth.kafka.server"));
     kafkaProducerProperties.setKeySerializerClass(StringSerializer.class);
     kafkaProducerProperties.setValueSerializerClass(StringSerializer.class);
-  }
-
-  KafkaFeatureFactory<KafkaConsumer, KafkaConsumerProperties> createConsumerFactory() {
-    return new KafkaConsumerFactory(this.kafkaConsumerProperties);
-  }
-
-  KafkaFeatureFactory<KafkaProducer, KafkaProducerProperties> createProducerFactory() {
-    return new KafkaProducerFactory(this.kafkaProducerProperties);
+    return new KafkaProducerFactory(kafkaProducerProperties);
   }
 }
