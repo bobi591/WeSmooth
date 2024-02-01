@@ -6,6 +6,10 @@ import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
 
+/**
+ * All properties for a functional Kafka Consumer. <br>
+ * <b>Note:</b> Each set method should be populated with a value!
+ */
 public class KafkaConsumerProperties implements IKafkaFeatureProperties {
   private final Properties properties = new Properties();
 

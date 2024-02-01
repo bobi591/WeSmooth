@@ -8,6 +8,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/** Kafka Record Factory. */
 @Component
 public class KafkaRecordFactory {
   @Autowired
@@ -19,6 +20,12 @@ public class KafkaRecordFactory {
   private final Gson gson;
   private final ApplicationProperties applicationProperties;
 
+  /**
+   * Creates a Kafka Record from a Blueprint execution event.
+   *
+   * @param event the event that should be represented as value in the Kafka Record
+   * @return the Kafka Record
+   */
   public ProducerRecord<String, String> createBlueprintExecutionRecord(
       BlueprintExecutionEvent event) {
     String serializedEvent = gson.toJson(event);

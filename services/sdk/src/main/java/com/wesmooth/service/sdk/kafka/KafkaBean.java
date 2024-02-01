@@ -10,6 +10,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/** A bean exposing all required Kafka functionalities in WeSmooth! */
 @Component
 public class KafkaBean {
   private final KafkaFeatureFactory<KafkaConsumer<String, String>, KafkaConsumerProperties>
@@ -26,14 +27,29 @@ public class KafkaBean {
     this.kafkaRecordFactory = kafkaRecordFactory;
   }
 
+  /**
+   * Creates a Kafka Consumer
+   *
+   * @return the Kafka Consumer
+   */
   public KafkaConsumer<String, String> createConsumer() {
     return this.kafkaConsumerFactory.create();
   }
 
+  /**
+   * Creates a Kafka Producer
+   *
+   * @return the Kafka Producer
+   */
   public KafkaProducer<String, String> createProducer() {
     return this.kafkaProducerFactory.create();
   }
 
+  /**
+   * Creates a Kafka Record Factory
+   *
+   * @return the Kafka Record Factory
+   */
   public KafkaRecordFactory createKafkaRecordFactory() {
     return this.kafkaRecordFactory;
   }

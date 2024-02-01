@@ -5,6 +5,10 @@ import com.wesmooth.service.sdk.kafka.common.IKafkaFeatureProperties;
 import java.util.Properties;
 import org.apache.kafka.clients.producer.ProducerConfig;
 
+/**
+ * All properties for a functional Kafka Consumer. <br>
+ * <b>Note:</b> Each set method should be populated with a value!
+ */
 public class KafkaProducerProperties implements IKafkaFeatureProperties {
 
   private final Properties properties = new Properties();

@@ -15,6 +15,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/** A factory wrapper for factories that expose all required Kafka functionalities for WeSmooth! */
 @Component
 public class KafkaFeaturesFactory {
   private final ApplicationProperties applicationProperties;

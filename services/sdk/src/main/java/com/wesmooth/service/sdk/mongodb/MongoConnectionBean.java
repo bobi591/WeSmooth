@@ -18,6 +18,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/** A bean exposing all required Mongodb functionalities in WeSmooth! */
 @Component
 public class MongoConnectionBean implements DisposableBean {
   private final String mongoDbName;
@@ -41,11 +42,25 @@ public class MongoConnectionBean implements DisposableBean {
     this.mongoDbName = applicationProperties.getProperty("wesmooth.mongodb.dbname");
   }
 
+  /**
+   * Returns the collection for specific DTO type.
+   *
+   * @param clazz the class of the DTO <i>(the collection in mongodb should carry the same name as
+   *     the DTO class, but with lowercase)</i>
+   * @return the mongodb collection holding the objects of the requested DTO type
+   * @param <T> the type of the DTO
+   */
   public <T> MongoCollection<T> getCollection(Class<T> clazz) {
     String collectionName = clazz.getSimpleName().toLowerCase();
     return this.mongoDbClient.getDatabase(this.mongoDbName).getCollection(collectionName, clazz);
   }
 
+  /**
+   * Method invoked during the destruction of the bean which is figuratively accepted as the end of
+   * the application's lifecycle.
+   *
+   * @throws Exception an exception that can occur during the termination of the lifecycle
+   */
   @Override
   public void destroy() throws Exception {
     this.mongoDbClient.close();

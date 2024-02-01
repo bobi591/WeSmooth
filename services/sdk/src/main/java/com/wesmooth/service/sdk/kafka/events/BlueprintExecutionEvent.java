@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
+/** The Blueprint Execution Event. */
 @Setter
 @NoArgsConstructor
 public class BlueprintExecutionEvent {
