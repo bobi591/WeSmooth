@@ -15,6 +15,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 /**
+ * Kafka Consumer polling each 2 seconds using {@link ScheduledExecutorService}.
+ *
  * @author Boris Georgiev
  */
 @Slf4j
@@ -43,6 +45,14 @@ public class KafkaConsumerWorker
     this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
   }
 
+  /**
+   * Start the Kafka Consumer Worker by scheduling the poll at fixed rate of 2 seconds.
+   *
+   * @param successCallback the callback that will be called on successful retrieval of event and
+   *     will provide the actual event as {@link ConsumerRecord}.
+   * @param failureCallback the callback that will be called on (Exception) failure during the
+   *     retrieval of the event and will provide the actual failure as {@link Exception}.
+   */
   @Override
   public void start(
       IWorkerSuccessConsumer<ConsumerRecord<String, String>> successCallback,
@@ -66,6 +76,7 @@ public class KafkaConsumerWorker
         TimeUnit.SECONDS);
   }
 
+  /** Stops the worker by closing the Kafka Consumer and the Scheduled Executor Service. */
   @Override
   public void stop() {
     log.info("Requesting worker shutdown.");
