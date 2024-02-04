@@ -7,7 +7,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 /**
- * Gives access to the properties of the environment in which the current application is running.
+ * This bean gives access to the properties of the environment in which the current application is
+ * running.
  */
 @Configuration
 @PropertySource("classpath:application.properties")

@@ -1,6 +1,9 @@
 /* WeSmooth! 2024 */
 package com.wesmooth.service.sdk.worker;
 
+import com.wesmooth.service.sdk.IFailureConsumer;
+import com.wesmooth.service.sdk.ISuccessConsumer;
+
 /**
  * The interface of a Worker with callbacks for success and failure.
  *
@@ -9,8 +12,7 @@ package com.wesmooth.service.sdk.worker;
  * @param <F> the type of the failure callback
  * @author Boris Georgiev
  */
-public interface IWorker<
-    T, S extends IWorkerSuccessConsumer<T>, F extends IWorkerFailureConsumer<Exception>> {
+public interface IWorker<T, S extends ISuccessConsumer<T>, F extends IFailureConsumer<Exception>> {
   /**
    * Starts the Worker. In this methods it is suppsed to put the multithreading logic like
    * ExecutorServices, etc.

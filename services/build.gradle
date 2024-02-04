@@ -16,6 +16,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'com.diffplug.spotless'
     dependencies {
+        implementation 'org.apache.groovy:groovy:4.0.18'
         implementation 'org.slf4j:slf4j-api:2.0.11'
         implementation 'com.google.code.gson:gson:2.10.1'
         implementation 'org.apache.kafka:kafka-clients:3.6.1'
@@ -43,5 +44,12 @@ subprojects {
     }
     test {
         useJUnitPlatform()
+        // Add Java 19 experimental features compatibility (for Virtual Threads, etc..)
+        jvmArgs(['--enable-preview'])
+
+    }
+    // Add Java 19 experimental features compatibility (for Virtual Threads, etc..)
+    tasks.withType(JavaCompile).each {
+        it.options.compilerArgs.add('--enable-preview')
     }
 }

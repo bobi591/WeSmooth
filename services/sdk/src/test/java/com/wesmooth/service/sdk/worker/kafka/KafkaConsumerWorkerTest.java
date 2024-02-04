@@ -6,8 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-import com.wesmooth.service.sdk.worker.IWorkerFailureConsumer;
-import com.wesmooth.service.sdk.worker.IWorkerSuccessConsumer;
+import com.wesmooth.service.sdk.IFailureConsumer;
+import com.wesmooth.service.sdk.ISuccessConsumer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +30,8 @@ public class KafkaConsumerWorkerTest {
   private final String kafkaTopic = "TEST_TOPIC_123";
   @Mock private KafkaConsumer<String, String> kafkaConsumerMock;
   @Mock private ScheduledExecutorService scheduledExecutorServiceMock;
-  @Mock private IWorkerSuccessConsumer workerSuccessConsumerMock;
-  @Mock private IWorkerFailureConsumer workerFailureConsumerMock;
+  @Mock private ISuccessConsumer workerSuccessConsumerMock;
+  @Mock private IFailureConsumer workerFailureConsumerMock;
 
   @Test
   public void testStart() {

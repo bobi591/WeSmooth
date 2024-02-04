@@ -1,8 +1,14 @@
 /* WeSmooth! 2024 */
 package com.wesmooth.service.blueprint.lifecycle;
 
+import com.google.gson.Gson;
 import com.wesmooth.service.sdk.configuration.ApplicationProperties;
+import com.wesmooth.service.sdk.groovy.executor.GroovyExecutor;
+import com.wesmooth.service.sdk.groovy.executor.GroovyExecutorFactory;
+import com.wesmooth.service.sdk.groovy.sandbox.GroovySandbox;
+import com.wesmooth.service.sdk.groovy.sandbox.GroovySandboxFactory;
 import com.wesmooth.service.sdk.kafka.KafkaBean;
+import com.wesmooth.service.sdk.kafka.events.BlueprintExecutionEvent;
 import com.wesmooth.service.sdk.worker.kafka.KafkaConsumerWorker;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -18,16 +24,26 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class LifecycleManagementService implements InitializingBean, DisposableBean {
+  private final Gson gson;
   private final KafkaConsumerWorker kafkaConsumerWorker;
+  private final GroovyExecutorFactory groovyExecutorFactory;
+  private final GroovySandbox groovySandbox;
 
   @Autowired
   public LifecycleManagementService(
-      final ApplicationProperties applicationProperties, final KafkaBean kafkaBean) {
+      final ApplicationProperties applicationProperties,
+      final Gson gson,
+      final KafkaBean kafkaBean,
+      final GroovySandboxFactory groovySandboxFactory,
+      final GroovyExecutorFactory groovyExecutorFactory) {
+    this.gson = gson;
     KafkaConsumer<String, String> kafkaConsumer = kafkaBean.createConsumer();
     this.kafkaConsumerWorker =
         new KafkaConsumerWorker(
             applicationProperties.getProperty("wesmooth.kafka.topic.blueprint.execution"),
             kafkaConsumer);
+    this.groovySandbox = groovySandboxFactory.createWithVirtualThreads();
+    this.groovyExecutorFactory = groovyExecutorFactory;
   }
 
   /**
@@ -39,8 +55,27 @@ public class LifecycleManagementService implements InitializingBean, DisposableB
   @Override
   public void afterPropertiesSet() throws Exception {
     kafkaConsumerWorker.start(
-        success -> log.info("Consuming blueprint execution event: " + success.value()),
-        failure -> log.error(failure.getMessage()));
+        event -> {
+          // Convert the event JSON into BlueprintExecutionEvent object.
+          BlueprintExecutionEvent blueprintExecutionEvent =
+              gson.fromJson(event.value(), BlueprintExecutionEvent.class);
+          log.info(
+              "Consuming blueprint execution event: " + blueprintExecutionEvent.getExecutionId());
+          // Iterate all sections of the retrieved Blueprint in the event.
+          blueprintExecutionEvent
+              .getBlueprint()
+              .getSections()
+              .forEach(
+                  blueprintSection -> {
+                    // Create Groovy Executor
+                    GroovyExecutor<String> groovyExecutor =
+                        this.groovyExecutorFactory.createForString(blueprintSection);
+                    // Pass the Groovy Executor to the Groovy Sandbox for execution.
+                    groovySandbox.run(
+                        groovyExecutor, log::info, exception -> log.error(exception.getMessage()));
+                  });
+        },
+        exception -> log.error(exception.getMessage()));
   }
 
   /**
@@ -52,5 +87,6 @@ public class LifecycleManagementService implements InitializingBean, DisposableB
   @Override
   public void destroy() throws Exception {
     kafkaConsumerWorker.stop();
+    groovySandbox.close();
   }
 }

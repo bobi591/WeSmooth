@@ -1,9 +1,9 @@
 /* WeSmooth! 2024 */
 package com.wesmooth.service.sdk.worker.kafka;
 
+import com.wesmooth.service.sdk.IFailureConsumer;
+import com.wesmooth.service.sdk.ISuccessConsumer;
 import com.wesmooth.service.sdk.worker.IWorker;
-import com.wesmooth.service.sdk.worker.IWorkerFailureConsumer;
-import com.wesmooth.service.sdk.worker.IWorkerSuccessConsumer;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.concurrent.Executors;
@@ -23,8 +23,8 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 public class KafkaConsumerWorker
     implements IWorker<
         ConsumerRecord<String, String>,
-        IWorkerSuccessConsumer<ConsumerRecord<String, String>>,
-        IWorkerFailureConsumer<Exception>> {
+        ISuccessConsumer<ConsumerRecord<String, String>>,
+        IFailureConsumer<Exception>> {
 
   private final String kafkaTopic;
   private final KafkaConsumer<String, String> kafkaConsumer;
@@ -55,8 +55,8 @@ public class KafkaConsumerWorker
    */
   @Override
   public void start(
-      IWorkerSuccessConsumer<ConsumerRecord<String, String>> successCallback,
-      IWorkerFailureConsumer<Exception> failureCallback) {
+      ISuccessConsumer<ConsumerRecord<String, String>> successCallback,
+      IFailureConsumer<Exception> failureCallback) {
     log.info("Subscribing worker.");
     this.kafkaConsumer.subscribe(Collections.singleton(this.kafkaTopic));
     log.info("Staring worker.");

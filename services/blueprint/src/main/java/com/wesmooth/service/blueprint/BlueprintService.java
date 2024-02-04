@@ -14,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
   "com.wesmooth.service.sdk.configuration",
   "com.wesmooth.service.sdk.worker",
   "com.wesmooth.service.sdk.kafka",
+  "com.wesmooth.service.sdk.groovy",
   "com.wesmooth.service.blueprint.lifecycle"
 })
 public class BlueprintService {
