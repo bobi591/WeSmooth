@@ -6,7 +6,14 @@ buildscript {
 
 plugins {
     id 'java'
+    id 'java-library'
     id 'com.diffplug.spotless' version '6.24.0'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 subprojects {
@@ -44,12 +51,5 @@ subprojects {
     }
     test {
         useJUnitPlatform()
-        // Add Java 19 experimental features compatibility (for Virtual Threads, etc..)
-        jvmArgs(['--enable-preview'])
-
-    }
-    // Add Java 19 experimental features compatibility (for Virtual Threads, etc..)
-    tasks.withType(JavaCompile).each {
-        it.options.compilerArgs.add('--enable-preview')
     }
 }

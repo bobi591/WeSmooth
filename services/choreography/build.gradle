@@ -8,7 +8,8 @@ group = 'com.wesmooth.service'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '19'
+	sourceCompatibility = '21'
+	targetCompatibility = '21'
 }
 
 configurations {
