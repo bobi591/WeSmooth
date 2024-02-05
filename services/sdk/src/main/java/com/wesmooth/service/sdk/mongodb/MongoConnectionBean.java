@@ -10,6 +10,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.wesmooth.service.sdk.configuration.ApplicationProperties;
+import com.wesmooth.service.sdk.kafka.events.BlueprintSectionExecutionEvent;
 import com.wesmooth.service.sdk.mongodb.dto.Blueprint;
 import com.wesmooth.service.sdk.mongodb.dto.BlueprintSection;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -28,8 +29,12 @@ public class MongoConnectionBean implements DisposableBean {
   MongoConnectionBean(final ApplicationProperties applicationProperties) {
     ConnectionString connectionString =
         new ConnectionString(applicationProperties.getProperty("wesmooth.mongodb.uri"));
+    // TODO: We should add all preservable classes in Mongodb here... is there automatic way to add
+    // them here?
     PojoCodecProvider pojoCodecProvider =
-        PojoCodecProvider.builder().register(Blueprint.class, BlueprintSection.class).build();
+        PojoCodecProvider.builder()
+            .register(Blueprint.class, BlueprintSection.class, BlueprintSectionExecutionEvent.class)
+            .build();
     CodecRegistry codecRegistry =
         fromRegistries(
             MongoClientSettings.getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));

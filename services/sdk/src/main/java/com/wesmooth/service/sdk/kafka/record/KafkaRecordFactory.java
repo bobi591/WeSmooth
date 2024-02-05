@@ -4,6 +4,7 @@ package com.wesmooth.service.sdk.kafka.record;
 import com.google.gson.Gson;
 import com.wesmooth.service.sdk.configuration.ApplicationProperties;
 import com.wesmooth.service.sdk.kafka.events.BlueprintExecutionEvent;
+import com.wesmooth.service.sdk.kafka.events.BlueprintSectionExecutionEvent;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,20 @@ public class KafkaRecordFactory {
     String serializedEvent = gson.toJson(event);
     return new ProducerRecord<>(
         applicationProperties.getProperty("wesmooth.kafka.topic.blueprint.execution"),
+        serializedEvent);
+  }
+
+  /**
+   * Creates a Kafka Record from a Blueprint Section execution event.
+   *
+   * @param event the event that should be represented as value in the Kafka Record
+   * @return the Kafka Record
+   */
+  public ProducerRecord<String, String> createBlueprintSectionExecutionRecord(
+      BlueprintSectionExecutionEvent event) {
+    String serializedEvent = gson.toJson(event);
+    return new ProducerRecord<>(
+        applicationProperties.getProperty("wesmooth.kafka.topic.blueprintsection.execution"),
         serializedEvent);
   }
 }

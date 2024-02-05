@@ -6,7 +6,7 @@ import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.MongoCursor;
 import com.wesmooth.service.sdk.kafka.KafkaBean;
 import com.wesmooth.service.sdk.kafka.events.BlueprintExecutionEvent;
-import com.wesmooth.service.sdk.kafka.events.EventStatus;
+import com.wesmooth.service.sdk.kafka.events.BlueprintSectionExecutionEvent;
 import com.wesmooth.service.sdk.kafka.record.KafkaRecordFactory;
 import com.wesmooth.service.sdk.mongodb.MongoConnectionBean;
 import com.wesmooth.service.sdk.mongodb.dto.Blueprint;
@@ -58,8 +58,21 @@ public class BlueprintsController {
     Blueprint blueprint =
         mongoConnection.getCollection(Blueprint.class).find(blueprintNameFilter).first();
     BlueprintExecutionEvent blueprintExecutionEvent =
-        new BlueprintExecutionEvent(EventStatus.START, executionId, blueprint);
+        new BlueprintExecutionEvent(executionId, blueprint);
     kafkaProducer.send(kafkaRecordFactory.createBlueprintExecutionRecord(blueprintExecutionEvent));
     return "Kafka event for blueprint execution created with executionId: " + executionId;
+  }
+
+  @GetMapping
+  @RequestMapping("/statuses")
+  public List<BlueprintSectionExecutionEvent> getAllBlueprintSectionExecutionEvents() {
+    List<BlueprintSectionExecutionEvent> results = new LinkedList<>();
+    try (MongoCursor<BlueprintSectionExecutionEvent> cursor =
+        mongoConnection.getCollection(BlueprintSectionExecutionEvent.class).find().iterator()) {
+      while (cursor.hasNext()) {
+        results.add(cursor.next());
+      }
+    }
+    return results;
   }
 }

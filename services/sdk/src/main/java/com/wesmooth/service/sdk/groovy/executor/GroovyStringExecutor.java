@@ -16,7 +16,9 @@ public class GroovyStringExecutor extends GroovyExecutor<String> {
   public void execute(
       ISuccessConsumer<String> successConsumer, IFailureConsumer<Exception> failureConsumer) {
     try {
-      successConsumer.onSuccess(String.valueOf(Eval.me(this.groovyContainer.getGroovyCode())));
+      successConsumer.onSuccess(
+          String.format(
+              "Groovy code evaluation value: %s", Eval.me(this.groovyContainer.getGroovyCode())));
     } catch (Exception e) {
       failureConsumer.onFailure(e);
     }

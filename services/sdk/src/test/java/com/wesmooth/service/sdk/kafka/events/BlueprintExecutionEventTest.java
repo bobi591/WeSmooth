@@ -11,23 +11,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class BlueprintExecutionEventTest {
   @Test
-  public void testNullPointerExceptionWhenEventStatusNull() {
-    assertThrows(
-        NullPointerException.class,
-        () -> new BlueprintExecutionEvent(null, "test", new Blueprint()));
-  }
-
-  @Test
   public void testNullPointerExceptionWhenExecutionIdNull() {
     assertThrows(
-        NullPointerException.class,
-        () -> new BlueprintExecutionEvent(EventStatus.START, null, new Blueprint()));
+        NullPointerException.class, () -> new BlueprintExecutionEvent(null, new Blueprint()));
   }
 
   @Test
   public void testNullPointerExceptionWhenBlueprintNull() {
-    assertThrows(
-        NullPointerException.class,
-        () -> new BlueprintExecutionEvent(EventStatus.START, "test", null));
+    assertThrows(NullPointerException.class, () -> new BlueprintExecutionEvent("test", null));
   }
 }
