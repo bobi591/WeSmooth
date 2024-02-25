@@ -25,7 +25,8 @@ repositories {
 dependencies {
 	implementation project(path: ':sdk')
 
-	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'com.okta.spring:okta-spring-boot-starter:3.0.5'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	//implementation 'org.springframework.session:spring-session-core'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
