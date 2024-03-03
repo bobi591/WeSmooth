@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /** The public contract (API) for performing actions relevant to Blueprints. */
+@CrossOrigin
 @RestController
 @RequestMapping("/blueprints")
 public class BlueprintsController {
