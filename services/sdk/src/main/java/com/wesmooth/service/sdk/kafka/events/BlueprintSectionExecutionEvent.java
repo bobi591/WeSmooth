@@ -1,7 +1,7 @@
 /* WeSmooth! 2024 */
 package com.wesmooth.service.sdk.kafka.events;
 
-import com.wesmooth.service.sdk.mongodb.dto.BlueprintSection;
+import com.wesmooth.service.sdk.mongodb.dto.blueprint.BlueprintSection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

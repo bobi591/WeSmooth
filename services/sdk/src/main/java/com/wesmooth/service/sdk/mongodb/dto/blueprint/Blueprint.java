@@ -1,5 +1,5 @@
 /* WeSmooth! 2024 */
-package com.wesmooth.service.sdk.mongodb.dto;
+package com.wesmooth.service.sdk.mongodb.dto.blueprint;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

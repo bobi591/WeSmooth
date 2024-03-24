@@ -9,7 +9,7 @@ import com.wesmooth.service.sdk.kafka.events.BlueprintExecutionEvent;
 import com.wesmooth.service.sdk.kafka.events.BlueprintSectionExecutionEvent;
 import com.wesmooth.service.sdk.kafka.record.KafkaRecordFactory;
 import com.wesmooth.service.sdk.mongodb.MongoConnectionBean;
-import com.wesmooth.service.sdk.mongodb.dto.Blueprint;
+import com.wesmooth.service.sdk.mongodb.dto.blueprint.Blueprint;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;

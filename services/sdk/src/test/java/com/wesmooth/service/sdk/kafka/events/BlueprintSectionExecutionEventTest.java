@@ -3,7 +3,7 @@ package com.wesmooth.service.sdk.kafka.events;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.wesmooth.service.sdk.mongodb.dto.BlueprintSection;
+import com.wesmooth.service.sdk.mongodb.dto.blueprint.BlueprintSection;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

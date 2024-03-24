@@ -11,8 +11,9 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.wesmooth.service.sdk.configuration.ApplicationProperties;
 import com.wesmooth.service.sdk.kafka.events.BlueprintSectionExecutionEvent;
-import com.wesmooth.service.sdk.mongodb.dto.Blueprint;
-import com.wesmooth.service.sdk.mongodb.dto.BlueprintSection;
+import com.wesmooth.service.sdk.mongodb.dto.blueprint.Blueprint;
+import com.wesmooth.service.sdk.mongodb.dto.blueprint.BlueprintSection;
+import com.wesmooth.service.sdk.mongodb.dto.user.User;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.springframework.beans.factory.DisposableBean;
@@ -33,7 +34,11 @@ public class MongoConnectionBean implements DisposableBean {
     // them here?
     PojoCodecProvider pojoCodecProvider =
         PojoCodecProvider.builder()
-            .register(Blueprint.class, BlueprintSection.class, BlueprintSectionExecutionEvent.class)
+            .register(
+                Blueprint.class,
+                BlueprintSection.class,
+                BlueprintSectionExecutionEvent.class,
+                User.class)
             .build();
     CodecRegistry codecRegistry =
         fromRegistries(
