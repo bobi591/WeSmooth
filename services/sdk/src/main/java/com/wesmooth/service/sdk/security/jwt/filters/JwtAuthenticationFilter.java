@@ -1,5 +1,5 @@
 /* WeSmooth! 2024 */
-package com.wesmooth.service.sdk.security.filters;
+package com.wesmooth.service.sdk.security.jwt.filters;
 
 import com.wesmooth.service.sdk.security.jwt.JwtUtility;
 import com.wesmooth.service.sdk.security.jwt.dto.Jwt;
@@ -61,7 +61,6 @@ public class JwtAuthenticationFilter extends BaseJwtFilter {
     FilterRegistrationBean<JwtAuthenticationFilter> bean = new FilterRegistrationBean<>();
 
     bean.setFilter(this);
-    bean.addUrlPatterns();
 
     return bean;
   }

@@ -1,7 +1,9 @@
 /* WeSmooth! 2024 */
-package com.wesmooth.service.choreography.controllers;
+package com.wesmooth.service.choreography.controllers.users;
 
+import com.wesmooth.service.choreography.controllers.users.dto.LoginRequest;
 import com.wesmooth.service.sdk.mongodb.MongoConnectionBean;
+import com.wesmooth.service.sdk.mongodb.dto.user.User;
 import com.wesmooth.service.sdk.security.jwt.JwtUtility;
 import com.wesmooth.service.sdk.security.jwt.dto.Jwt;
 import java.security.InvalidKeyException;
@@ -12,10 +14,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Boris Georgiev
@@ -35,7 +35,7 @@ public class UsersController {
 
   @PostMapping
   @RequestMapping("/oauth2")
-  public String createJwt()
+  public ResponseEntity createJwt(@RequestBody LoginRequest loginRequest)
       throws NoSuchPaddingException,
           IllegalBlockSizeException,
           NoSuchAlgorithmException,
@@ -43,7 +43,14 @@ public class UsersController {
           BadPaddingException,
           InvalidKeyException {
     long expiration = System.currentTimeMillis() + Duration.ofMinutes(30).toMillis();
-    Jwt jwt = new Jwt(new Jwt.Header(), new Jwt.Payload(expiration, "test", "test"));
-    return jwtUtility.createJwt(jwt);
+    if (loginRequest.getUsername().equals("admin")
+        && loginRequest.getPassword().equals("admin123")) {
+      Jwt jwt =
+          new Jwt(
+              new Jwt.Header(),
+              new Jwt.Payload(expiration, loginRequest.getUsername(), "WeSmooth!"));
+      return ResponseEntity.status(200).body(jwtUtility.createJwt(jwt));
+    }
+    return ResponseEntity.status(401).body("Inavlid credentials.");
   }
 }

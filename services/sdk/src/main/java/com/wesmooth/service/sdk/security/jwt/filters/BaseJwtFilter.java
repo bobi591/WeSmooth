@@ -1,5 +1,5 @@
 /* WeSmooth! 2024 */
-package com.wesmooth.service.sdk.security.filters;
+package com.wesmooth.service.sdk.security.jwt.filters;
 
 import com.wesmooth.service.sdk.security.SecurityException;
 import com.wesmooth.service.sdk.security.jwt.JwtUtility;

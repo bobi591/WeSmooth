@@ -1,5 +1,5 @@
 /* WeSmooth! 2024 */
-package com.wesmooth.service.choreography.controllers;
+package com.wesmooth.service.choreography.controllers.blueprints;
 
 import static com.mongodb.client.model.Filters.eq;
 
