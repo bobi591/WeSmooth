@@ -19,7 +19,7 @@ java {
 
 sonar {
     properties{
-            property 'sonar.projectkey', project
+            property 'sonar.projectkey', sonarProjectKey
         property 'sonar.organization', sonarOrganization
         property 'sonar.host.url', sonarHost
     }
