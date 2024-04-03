@@ -13,7 +13,7 @@ import com.wesmooth.service.sdk.mongodb.dto.blueprint.Blueprint;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import org.apache.kafka.clients.producer.KafkaProducer;
+import lombok.AllArgsConstructor;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,17 +22,11 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RestController
 @RequestMapping("/blueprints")
+@AllArgsConstructor
 public class BlueprintsController {
-  private final MongoConnectionBean mongoConnection;
-  private final KafkaProducer kafkaProducer;
-  private final KafkaRecordFactory kafkaRecordFactory;
-
-  @Autowired
-  public BlueprintsController(MongoConnectionBean mongoConnection, KafkaBean kafkaBean) {
-    this.mongoConnection = mongoConnection;
-    this.kafkaProducer = kafkaBean.createProducer();
-    this.kafkaRecordFactory = kafkaBean.createKafkaRecordFactory();
-  }
+  @Autowired private MongoConnectionBean mongoConnection;
+  @Autowired private KafkaBean kafkaBean;
+  @Autowired private KafkaRecordFactory kafkaRecordFactory;
 
   @GetMapping
   public List<Blueprint> getAll() {
@@ -60,7 +54,9 @@ public class BlueprintsController {
         mongoConnection.getCollection(Blueprint.class).find(blueprintNameFilter).first();
     BlueprintExecutionEvent blueprintExecutionEvent =
         new BlueprintExecutionEvent(executionId, blueprint);
-    kafkaProducer.send(kafkaRecordFactory.createBlueprintExecutionRecord(blueprintExecutionEvent));
+    kafkaBean
+        .createProducer()
+        .send(kafkaRecordFactory.createBlueprintExecutionRecord(blueprintExecutionEvent));
     return "Kafka event for blueprint execution created with executionId: " + executionId;
   }
 

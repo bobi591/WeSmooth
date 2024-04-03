@@ -1,8 +1,8 @@
 /* WeSmooth! 2024 */
-package com.wesmooth.service.sdk.security.jwt.filters;
+package com.wesmooth.service.sdk.security.filters;
 
-import com.wesmooth.service.sdk.security.jwt.JwtUtility;
-import com.wesmooth.service.sdk.security.jwt.dto.Jwt;
+import com.wesmooth.service.sdk.security.Jwt;
+import com.wesmooth.service.sdk.security.JwtUtility;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,12 +32,9 @@ public class JwtAuthenticationFilter extends BaseJwtFilter {
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
-    if (trueOrSkipFilter(
-        !request.getRequestURL().toString().contains("/users/oauth2"),
-        request,
-        response,
-        filterChain)) {
+      throws IOException, ServletException {
+    if (!request.getRequestURI().contains("/users/oauth2")
+        && !request.getRequestURI().contains("/users/register")) {
       final String authHeader = request.getHeader("Authorization");
       try {
         trueOrThrow(authHeader != null && !authHeader.isBlank());
@@ -49,6 +46,7 @@ public class JwtAuthenticationFilter extends BaseJwtFilter {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT is malformed or expired.");
       }
     }
+    filterChain.doFilter(request, response);
   }
 
   /**
@@ -59,9 +57,7 @@ public class JwtAuthenticationFilter extends BaseJwtFilter {
   @Bean
   public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilterRegistrationBean() {
     FilterRegistrationBean<JwtAuthenticationFilter> bean = new FilterRegistrationBean<>();
-
     bean.setFilter(this);
-
     return bean;
   }
 }

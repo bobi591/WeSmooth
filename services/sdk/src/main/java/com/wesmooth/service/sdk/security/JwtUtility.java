@@ -1,9 +1,8 @@
 /* WeSmooth! 2024 */
-package com.wesmooth.service.sdk.security.jwt;
+package com.wesmooth.service.sdk.security;
 
 import com.google.gson.Gson;
 import com.wesmooth.service.sdk.configuration.ApplicationProperties;
-import com.wesmooth.service.sdk.security.jwt.dto.Jwt;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;

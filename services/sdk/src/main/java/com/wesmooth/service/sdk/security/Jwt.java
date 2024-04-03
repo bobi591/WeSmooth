@@ -1,7 +1,9 @@
 /* WeSmooth! 2024 */
-package com.wesmooth.service.sdk.security.jwt.dto;
+package com.wesmooth.service.sdk.security;
 
 import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * JWT Data Transfer Object.
@@ -25,27 +27,16 @@ public class Jwt {
     this.payload = payload;
   }
 
+  @AllArgsConstructor
+  @Getter
   public static class Header {
     public Header() {
       alg = "RS256";
       typ = "JWT";
     }
 
-    public Header(String alg, String typ) {
-      this.alg = alg;
-      this.typ = typ;
-    }
-
     private final String alg;
     private final String typ;
-
-    public String getAlg() {
-      return alg;
-    }
-
-    public String getTyp() {
-      return typ;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -60,6 +51,7 @@ public class Jwt {
     }
   }
 
+  @Getter
   public static class Payload {
 
     public Payload(long exp, String username, String iss) {
@@ -72,18 +64,6 @@ public class Jwt {
       this.exp = exp;
       this.username = username;
       this.iss = "WeSmooth!";
-    }
-
-    public long getExp() {
-      return exp;
-    }
-
-    public String getUsername() {
-      return username;
-    }
-
-    public String getIss() {
-      return iss;
     }
 
     private final long exp;
