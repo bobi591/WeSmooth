@@ -34,6 +34,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          cd services
-          ./gradlew build sonar --stacktrace
+        run: services/gradlew build sonar --stacktrace
