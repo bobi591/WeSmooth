@@ -18,16 +18,25 @@ java {
 }
 
 sonar {
-    properties{
-            property 'sonar.projectkey', sonarProjectKey
+    properties {
+        property 'sonar.projectkey', sonarProjectKey
         property 'sonar.organization', sonarOrganization
         property 'sonar.host.url', sonarHost
+        property "sonar.branch", sonarBranch
     }
 }
 
 subprojects {
     repositories {
         mavenCentral()
+    }
+    sonar {
+        properties {
+            property 'sonar.projectkey', sonarProjectKey
+            property 'sonar.organization', sonarOrganization
+            property 'sonar.host.url', sonarHost
+            property "sonar.branch", sonarBranch
+        }
     }
     apply plugin: 'java'
     apply plugin: 'com.diffplug.spotless'
