@@ -1,4 +1,4 @@
-rootProject.name = 'services'
+rootProject.name = 'wesmooth-services'
 include 'choreography'
 include 'sdk'
 include 'blueprint'
