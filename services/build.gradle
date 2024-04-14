@@ -22,7 +22,7 @@ sonar {
         property 'sonar.projectkey', sonarProjectKey
         property 'sonar.organization', sonarOrganization
         property 'sonar.host.url', sonarHost
-        property "sonar.branch", sonarBranch
+        property 'sonar.branch', sonarBranch
     }
 }
 
@@ -35,7 +35,7 @@ subprojects {
             property 'sonar.projectkey', sonarProjectKey
             property 'sonar.organization', sonarOrganization
             property 'sonar.host.url', sonarHost
-            property "sonar.branch", sonarBranch
+            property 'sonar.branch', sonarBranch
         }
     }
     apply plugin: 'java'
