@@ -8,20 +8,14 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.InvalidKeyException;
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.EncodedKeySpec;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -83,52 +77,45 @@ public class JwtUtility {
    *
    * @param jwt the JWT in string format
    * @return the decrypted and transformed JWT
-   * @throws NoSuchAlgorithmException exception during decryption
-   * @throws InvalidKeySpecException exception during decryption
-   * @throws NoSuchPaddingException exception during decryption
-   * @throws InvalidKeyException exception during decryption
-   * @throws IllegalBlockSizeException exception during decryption
-   * @throws BadPaddingException exception during decryption
+   * @throws SecurityException exception during decryption
    */
-  public Jwt decrypt(String jwt)
-      throws NoSuchAlgorithmException,
-          InvalidKeySpecException,
-          NoSuchPaddingException,
-          InvalidKeyException,
-          IllegalBlockSizeException,
-          BadPaddingException {
-    byte[] privateKeyBytes = Base64.getDecoder().decode(this.privateKey);
-    KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-    EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
-    RSAPrivateKey privateKey = (RSAPrivateKey) keyFactory.generatePrivate(privateKeySpec);
-    Cipher rsaCipher = Cipher.getInstance("RSA");
-    rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
+  public Jwt decrypt(String jwt) throws SecurityException {
+    try {
+      byte[] privateKeyBytes = Base64.getDecoder().decode(this.privateKey);
+      KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+      EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+      RSAPrivateKey privateKey = (RSAPrivateKey) keyFactory.generatePrivate(privateKeySpec);
+      Cipher rsaCipher = Cipher.getInstance("RSA");
+      rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
 
-    String[] jwtContent = jwt.split("\\.");
-    Jwt.Header header =
-        gson.fromJson(
-            new String(Base64.getDecoder().decode(jwtContent[0]), StandardCharsets.UTF_8),
-            Jwt.Header.class);
-    Jwt.Payload payload =
-        gson.fromJson(
-            new String(Base64.getDecoder().decode(jwtContent[1]), StandardCharsets.UTF_8),
-            Jwt.Payload.class);
+      String[] jwtContent = jwt.split("\\.");
+      Jwt.Header header =
+          gson.fromJson(
+              new String(Base64.getDecoder().decode(jwtContent[0]), StandardCharsets.UTF_8),
+              Jwt.Header.class);
+      Jwt.Payload payload =
+          gson.fromJson(
+              new String(Base64.getDecoder().decode(jwtContent[1]), StandardCharsets.UTF_8),
+              Jwt.Payload.class);
 
-    byte[] decryptedBytes = rsaCipher.doFinal(Base64.getUrlDecoder().decode(jwtContent[2]));
-    String signature = new String(decryptedBytes, StandardCharsets.UTF_8);
+      byte[] decryptedBytes = rsaCipher.doFinal(Base64.getUrlDecoder().decode(jwtContent[2]));
+      String signature = new String(decryptedBytes, StandardCharsets.UTF_8);
 
-    String[] signatureContent = signature.split("\\.");
-    Jwt.Header headerFromSignature =
-        gson.fromJson(
-            new String(Base64.getDecoder().decode(signatureContent[0])), Jwt.Header.class);
-    Jwt.Payload payloadFromSignature =
-        gson.fromJson(
-            new String(Base64.getDecoder().decode(signatureContent[1])), Jwt.Payload.class);
+      String[] signatureContent = signature.split("\\.");
+      Jwt.Header headerFromSignature =
+          gson.fromJson(
+              new String(Base64.getDecoder().decode(signatureContent[0])), Jwt.Header.class);
+      Jwt.Payload payloadFromSignature =
+          gson.fromJson(
+              new String(Base64.getDecoder().decode(signatureContent[1])), Jwt.Payload.class);
 
-    // Signature verification
-    assert header.equals(headerFromSignature) && payload.equals(payloadFromSignature);
+      // Signature verification
+      assert header.equals(headerFromSignature) && payload.equals(payloadFromSignature);
 
-    return new Jwt(headerFromSignature, payloadFromSignature);
+      return new Jwt(headerFromSignature, payloadFromSignature);
+    } catch (Exception e) {
+      throw new SecurityException(e);
+    }
   }
 
   /**
@@ -136,43 +123,38 @@ public class JwtUtility {
    *
    * @param jwt the JWT containing the content of the token
    * @return JWT in string format
-   * @throws NoSuchAlgorithmException exception during decryption
-   * @throws InvalidKeySpecException exception during decryption
-   * @throws NoSuchPaddingException exception during decryption
-   * @throws InvalidKeyException exception during decryption
-   * @throws IllegalBlockSizeException exception during decryption
-   * @throws BadPaddingException exception during decryption
+   * @throws SecurityException error during encryption
    */
-  public String createJwt(Jwt jwt)
-      throws NoSuchAlgorithmException,
-          InvalidKeySpecException,
-          NoSuchPaddingException,
-          InvalidKeyException,
-          IllegalBlockSizeException,
-          BadPaddingException {
-    byte[] publicKeyBytes = Base64.getDecoder().decode(this.publicKey);
-    KeyFactory publicKeyFactory = KeyFactory.getInstance("RSA");
-    EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
-    PublicKey publicKey = publicKeyFactory.generatePublic(publicKeySpec);
-    Cipher cipher = Cipher.getInstance("RSA");
-    cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+  public String createJwt(Jwt jwt) throws SecurityException {
+    try {
+      byte[] publicKeyBytes = Base64.getDecoder().decode(this.publicKey);
+      KeyFactory publicKeyFactory = KeyFactory.getInstance("RSA");
+      EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+      PublicKey publicKey = publicKeyFactory.generatePublic(publicKeySpec);
+      Cipher cipher = Cipher.getInstance("RSA");
+      cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
-    Base64.Encoder encoder = Base64.getEncoder().withoutPadding();
+      Base64.Encoder encoder = Base64.getEncoder().withoutPadding();
 
-    String encodedHeader =
-        encoder.encodeToString(this.gson.toJson(jwt.getHeader()).getBytes(StandardCharsets.UTF_8));
-    String encodedPayload =
-        encoder.encodeToString(this.gson.toJson(jwt.getPayload()).getBytes(StandardCharsets.UTF_8));
+      String encodedHeader =
+          encoder.encodeToString(
+              this.gson.toJson(jwt.getHeader()).getBytes(StandardCharsets.UTF_8));
+      String encodedPayload =
+          encoder.encodeToString(
+              this.gson.toJson(jwt.getPayload()).getBytes(StandardCharsets.UTF_8));
 
-    String unencryptedHeaderAndPayload = encodedHeader + "." + encodedPayload;
+      String unencryptedHeaderAndPayload = encodedHeader + "." + encodedPayload;
 
-    String signatureEncoded =
-        Base64.getUrlEncoder()
-            .withoutPadding()
-            .encodeToString(cipher.doFinal(unencryptedHeaderAndPayload.getBytes()));
+      String signatureEncoded =
+          Base64.getUrlEncoder()
+              .withoutPadding()
+              .encodeToString(cipher.doFinal(unencryptedHeaderAndPayload.getBytes()));
 
-    String jwtStr = unencryptedHeaderAndPayload + "." + signatureEncoded;
+      String jwtStr = unencryptedHeaderAndPayload + "." + signatureEncoded;
 
-    return jwtStr;
+      return jwtStr;
+    } catch (Exception e) {
+      throw new SecurityException(e);
+    }
   }
 }
