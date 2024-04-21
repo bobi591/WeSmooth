@@ -1,6 +1,7 @@
 /* WeSmooth! 2024 */
 package com.wesmooth.service.choreography.controllers.users;
 
+import com.wesmooth.service.sdk.security.SecurityException;
 import com.wesmooth.service.sdk.services.users.AuthenticationException;
 import com.wesmooth.service.sdk.services.users.login.LoginService;
 import com.wesmooth.service.sdk.services.users.login.dto.LoginRequest;
@@ -33,7 +34,8 @@ public class UsersController {
 
   @PostMapping
   @RequestMapping("/oauth2")
-  public String createJwt(@RequestBody LoginRequest loginRequest) throws AuthenticationException {
+  public String createJwt(@RequestBody LoginRequest loginRequest)
+      throws AuthenticationException, SecurityException {
     return loginService.login(loginRequest);
   }
 
