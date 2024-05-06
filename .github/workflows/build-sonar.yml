@@ -36,4 +36,5 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd services
-          ./gradlew build sonar --stacktrace
+          ./gradlew build --stacktrace
+          ./gradlew sonar --info
