@@ -16,11 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
 public class LoginService {
-  @Autowired private MongoConnectionBean mongoConnectionBean;
+  @Autowired
+  public LoginService(MongoConnectionBean mongoConnectionBean, JwtUtility jwtUtility) {
+    this.mongoConnectionBean = mongoConnectionBean;
+    this.jwtUtility = jwtUtility;
+  }
+  private final MongoConnectionBean mongoConnectionBean;
 
-  @Autowired private JwtUtility jwtUtility;
+  private final JwtUtility jwtUtility;
 
   public String login(LoginRequest loginRequest) throws AuthenticationException, SecurityException {
     long expiration = System.currentTimeMillis() + Duration.ofMinutes(30).toMillis();

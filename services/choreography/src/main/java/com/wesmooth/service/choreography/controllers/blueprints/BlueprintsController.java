@@ -14,19 +14,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 /** The public contract (API) for performing actions relevant to Blueprints. */
 @CrossOrigin
 @RestController
 @RequestMapping("/blueprints")
-@AllArgsConstructor
 public class BlueprintsController {
-  @Autowired private MongoConnectionBean mongoConnection;
-  @Autowired private KafkaBean kafkaBean;
-  @Autowired private KafkaRecordFactory kafkaRecordFactory;
+
+  @Autowired
+  public BlueprintsController(final MongoConnectionBean mongoConnection, final KafkaBean kafkaBean, KafkaRecordFactory kafkaRecordFactory) {
+    this.mongoConnection = mongoConnection;
+    this.kafkaProducer = kafkaBean.createProducer();
+    this.kafkaRecordFactory = kafkaRecordFactory;
+  }
+  private final MongoConnectionBean mongoConnection;
+  private final KafkaProducer<String, String> kafkaProducer;
+  private final KafkaRecordFactory kafkaRecordFactory;
 
   @GetMapping
   public List<Blueprint> getAll() {
@@ -52,11 +61,14 @@ public class BlueprintsController {
     Bson blueprintNameFilter = eq("blueprint_name", blueprintName);
     Blueprint blueprint =
         mongoConnection.getCollection(Blueprint.class).find(blueprintNameFilter).first();
+    if (blueprint == null) {
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "Blueprint with name: " + blueprintName + " not found");
+    }
     BlueprintExecutionEvent blueprintExecutionEvent =
         new BlueprintExecutionEvent(executionId, blueprint);
-    kafkaBean
-        .createProducer()
-        .send(kafkaRecordFactory.createBlueprintExecutionRecord(blueprintExecutionEvent));
+    kafkaProducer.send(
+            kafkaRecordFactory.createBlueprintExecutionRecord(blueprintExecutionEvent));
     return "Kafka event for blueprint execution created with executionId: " + executionId;
   }
 

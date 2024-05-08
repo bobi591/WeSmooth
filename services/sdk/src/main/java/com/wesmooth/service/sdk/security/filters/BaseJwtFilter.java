@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public abstract class BaseJwtFilter extends OncePerRequestFilter {
   protected final JwtUtility jwtUtility;
 
-  public BaseJwtFilter(JwtUtility jwtUtility) {
+  protected BaseJwtFilter(JwtUtility jwtUtility) {
     this.jwtUtility = jwtUtility;
   }
 

@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 public class LifecycleManagementService implements InitializingBean, DisposableBean {
   private final Gson gson;
   private final KafkaConsumerWorker kafkaConsumerWorker;
-  private final KafkaProducer kafkaProducer;
+  private final KafkaProducer<String, String> kafkaProducer;
   private final KafkaRecordFactory kafkaRecordFactory;
   private final GroovyExecutorFactory groovyExecutorFactory;
   private final GroovySandbox groovySandbox;

@@ -150,9 +150,7 @@ public class JwtUtility {
               .withoutPadding()
               .encodeToString(cipher.doFinal(unencryptedHeaderAndPayload.getBytes()));
 
-      String jwtStr = unencryptedHeaderAndPayload + "." + signatureEncoded;
-
-      return jwtStr;
+      return unencryptedHeaderAndPayload + "." + signatureEncoded;
     } catch (Exception e) {
       throw new SecurityException(e);
     }

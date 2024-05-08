@@ -19,11 +19,15 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RestController
 @RequestMapping("/users")
-@AllArgsConstructor
 public class UsersController {
+  @Autowired
+  public UsersController(final LoginService loginService, final RegistrationService registrationService) {
+    this.loginService = loginService;
+    this.registrationService = registrationService;
+  }
 
-  @Autowired private LoginService loginService;
-  @Autowired private RegistrationService registrationService;
+  private final LoginService loginService;
+  private final RegistrationService registrationService;
 
   @PostMapping
   @RequestMapping("/register")

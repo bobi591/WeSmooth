@@ -58,9 +58,7 @@ public class LifecycleManagementService implements InitializingBean, DisposableB
               mongoConnectionBean.getCollection(BlueprintSectionExecutionEvent.class);
           collection.insertOne(executionEvent);
         },
-        failure -> {
-          log.error(failure.getMessage());
-        });
+        failure -> log.error(failure.getMessage()));
   }
 
   /**

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public abstract class KafkaFeatureFactory<T, P extends IKafkaFeatureProperties> {
   protected final Properties featureProperties;
 
-  public KafkaFeatureFactory(P properties) {
+  protected KafkaFeatureFactory(P properties) {
     this.featureProperties = properties.build();
   }
 

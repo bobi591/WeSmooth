@@ -18,7 +18,12 @@ import org.springframework.context.annotation.ComponentScan;
   "com.wesmooth.service.blueprint.lifecycle"
 })
 public class BlueprintService {
-  @Autowired LifecycleManagementService lifecycleManagementService;
+  private final LifecycleManagementService lifecycleManagementService;
+
+  @Autowired
+  public BlueprintService(LifecycleManagementService lifecycleManagementService) {
+    this.lifecycleManagementService = lifecycleManagementService;
+  }
 
   public static void main(String[] args) {
     SpringApplication.run(BlueprintService.class, args);

@@ -13,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
 public class RegistrationService {
-  @Autowired private MongoConnectionBean mongoConnectionBean;
+    @Autowired
+    public RegistrationService(MongoConnectionBean mongoConnectionBean) {
+        this.mongoConnectionBean = mongoConnectionBean;
+    }
+  private final MongoConnectionBean mongoConnectionBean;
 
   public void register(RegistrationRequest registrationRequest) throws AuthenticationException {
     Bson eqUsername = Filters.eq("username", registrationRequest.getUsername());
