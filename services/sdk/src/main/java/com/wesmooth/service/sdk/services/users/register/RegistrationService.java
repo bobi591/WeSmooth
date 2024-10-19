@@ -7,17 +7,17 @@ import com.wesmooth.service.sdk.mongodb.MongoConnectionBean;
 import com.wesmooth.service.sdk.mongodb.dto.user.User;
 import com.wesmooth.service.sdk.services.users.AuthenticationException;
 import com.wesmooth.service.sdk.services.users.register.dto.RegistrationRequest;
-import lombok.AllArgsConstructor;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RegistrationService {
-    @Autowired
-    public RegistrationService(MongoConnectionBean mongoConnectionBean) {
-        this.mongoConnectionBean = mongoConnectionBean;
-    }
+  @Autowired
+  public RegistrationService(MongoConnectionBean mongoConnectionBean) {
+    this.mongoConnectionBean = mongoConnectionBean;
+  }
+
   private final MongoConnectionBean mongoConnectionBean;
 
   public void register(RegistrationRequest registrationRequest) throws AuthenticationException {

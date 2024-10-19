@@ -13,7 +13,6 @@ import com.wesmooth.service.sdk.mongodb.dto.blueprint.Blueprint;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +27,15 @@ import org.springframework.web.server.ResponseStatusException;
 public class BlueprintsController {
 
   @Autowired
-  public BlueprintsController(final MongoConnectionBean mongoConnection, final KafkaBean kafkaBean, KafkaRecordFactory kafkaRecordFactory) {
+  public BlueprintsController(
+      final MongoConnectionBean mongoConnection,
+      final KafkaBean kafkaBean,
+      KafkaRecordFactory kafkaRecordFactory) {
     this.mongoConnection = mongoConnection;
     this.kafkaProducer = kafkaBean.createProducer();
     this.kafkaRecordFactory = kafkaRecordFactory;
   }
+
   private final MongoConnectionBean mongoConnection;
   private final KafkaProducer<String, String> kafkaProducer;
   private final KafkaRecordFactory kafkaRecordFactory;
@@ -54,8 +57,7 @@ public class BlueprintsController {
     mongoConnection.getCollection(Blueprint.class).insertMany(blueprints);
   }
 
-  @PostMapping
-  @RequestMapping("/execute")
+  @PostMapping("/execute")
   public String execute(@RequestBody String blueprintName) {
     String executionId = UUID.randomUUID().toString();
     Bson blueprintNameFilter = eq("blueprint_name", blueprintName);
@@ -67,13 +69,11 @@ public class BlueprintsController {
     }
     BlueprintExecutionEvent blueprintExecutionEvent =
         new BlueprintExecutionEvent(executionId, blueprint);
-    kafkaProducer.send(
-            kafkaRecordFactory.createBlueprintExecutionRecord(blueprintExecutionEvent));
+    kafkaProducer.send(kafkaRecordFactory.createBlueprintExecutionRecord(blueprintExecutionEvent));
     return "Kafka event for blueprint execution created with executionId: " + executionId;
   }
 
-  @GetMapping
-  @RequestMapping("/statuses")
+  @GetMapping("/statuses")
   public List<BlueprintSectionExecutionEvent> getAllBlueprintSectionExecutionEvents() {
     List<BlueprintSectionExecutionEvent> results = new LinkedList<>();
     try (MongoCursor<BlueprintSectionExecutionEvent> cursor =

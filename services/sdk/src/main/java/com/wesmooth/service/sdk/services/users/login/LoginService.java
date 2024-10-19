@@ -10,7 +10,6 @@ import com.wesmooth.service.sdk.security.SecurityException;
 import com.wesmooth.service.sdk.services.users.AuthenticationException;
 import com.wesmooth.service.sdk.services.users.login.dto.LoginRequest;
 import java.time.Duration;
-import lombok.AllArgsConstructor;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +21,7 @@ public class LoginService {
     this.mongoConnectionBean = mongoConnectionBean;
     this.jwtUtility = jwtUtility;
   }
+
   private final MongoConnectionBean mongoConnectionBean;
 
   private final JwtUtility jwtUtility;
