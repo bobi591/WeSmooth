@@ -7,7 +7,6 @@ import com.wesmooth.service.sdk.services.users.login.LoginService;
 import com.wesmooth.service.sdk.services.users.login.dto.LoginRequest;
 import com.wesmooth.service.sdk.services.users.register.RegistrationService;
 import com.wesmooth.service.sdk.services.users.register.dto.RegistrationRequest;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UsersController {
   @Autowired
-  public UsersController(final LoginService loginService, final RegistrationService registrationService) {
+  public UsersController(
+      final LoginService loginService, final RegistrationService registrationService) {
     this.loginService = loginService;
     this.registrationService = registrationService;
   }
@@ -29,15 +29,13 @@ public class UsersController {
   private final LoginService loginService;
   private final RegistrationService registrationService;
 
-  @PostMapping
-  @RequestMapping("/register")
+  @PostMapping("/register")
   public void createUser(@RequestBody RegistrationRequest registrationRequest)
       throws AuthenticationException {
     registrationService.register(registrationRequest);
   }
 
-  @PostMapping
-  @RequestMapping("/oauth2")
+  @PostMapping("/oauth2")
   public String createJwt(@RequestBody LoginRequest loginRequest)
       throws AuthenticationException, SecurityException {
     return loginService.login(loginRequest);
